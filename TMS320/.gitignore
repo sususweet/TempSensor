@@ -1,0 +1,11 @@
+/Debug/
+
+/Release/
+
+/cmake-build-debug/
+
+/.idea/
+
+/.settings/
+/.launches/
+/targetConfigs/
