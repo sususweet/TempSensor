@@ -1,0 +1,11 @@
+document.writeln("<footer>");
+document.writeln("    <div class=\'mdui-bottom-nav mdui-bottom-nav-scroll-hide mdui-color-theme\'>");
+document.writeln("        <div class=\'footer\'>");
+document.writeln("            <p>© 2015-<span id=\'nowYear\'></span> sususweet<br>苏酥甜心糕 版权所有<br/></p>");
+document.writeln("        </div>");
+document.writeln("        <div class=\'clearfix\'></div>");
+document.writeln("    </div>");
+document.writeln("</footer>");
+document.writeln("<script type=\'text/javascript\'>");
+document.writeln("    $(\'#nowYear\').text(new Date().getFullYear());");
+document.writeln("</script>");

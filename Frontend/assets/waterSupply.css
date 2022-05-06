@@ -1,0 +1,42 @@
+body {
+    font-family: 'Helvetica Neue', Helvetica, 'Nimbus Sans L', Arial, 'Liberation Sans', 'Hiragino Sans GB', 'Source Han Sans CN', 'Source Han Sans SC', 'Microsoft YaHei', 'Wenquanyi Micro Hei', 'WenQuanYi Zen Hei', 'ST Heiti', SimHei, 'WenQuanYi Zen Hei Sharp', sans-serif;
+}
+
+.white_box {
+    height: 80px;
+}
+
+th, td {
+    vertical-align: middle !important;
+}
+
+body > .container {
+    padding-top: 0px
+}
+
+@media (max-width: 640px) {
+    .navbar {
+        display: none;
+    }
+
+    body > .container {
+        padding-top: 0;
+    }
+}
+
+.vblank {
+    height: 10px;
+}
+
+th {
+    text-align: center
+}
+
+.form-control {
+    margin-bottom: 10px
+}
+
+
+.slider-selection {
+    background: #BABABA;
+}

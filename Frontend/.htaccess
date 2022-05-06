@@ -1,0 +1,26 @@
+RewriteEngine on
+
+RewriteRule ^admin$ pages/admin.html
+RewriteCond %{QUERY_STRING} dev_id
+RewriteRule ^admin/chart$ pages/device_chart.html
+RewriteRule ^admin/([^/]+)$ pages/$1.html
+
+# RewriteCond %{QUERY_STRING} dev_id
+RewriteRule ^admin/device/detail pages/device_detail.html
+
+RewriteRule ^admin/([^/]+)/([^/]+)$ pages/$1/$2
+
+# 不存在那个文件
+RewriteCond %{REQUEST_FILENAME} !-f
+# 不存在那个目录
+RewriteCond %{REQUEST_FILENAME} !-d
+SetEnv CI_ENV development
+
+
+#RewriteCond %{SERVER_PORT} !^443$
+#RewriteRule ^.*$ https://%{SERVER_NAME}%{REQUEST_URI} [L,R]
+
+RewriteRule ^api/(.*)$ api/index.php/$1 [L]
+#RewriteCond %{HTTP_HOST} ^www.zju-lab.cn$ [NC]
+#RewriteRule ^(.*)$ https://enrollment.zju-lab.cn/$1 [R=301,L]
+

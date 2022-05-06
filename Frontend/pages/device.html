@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>空气质量监测系统-设备列表</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+	<link rel="stylesheet" href="../assets/mdui/css/mdui.min.css">
+	<link rel="stylesheet" href="../assets/docs.css">
+    <!--link rel="stylesheet" href="./assets/bootstrap.min.css">
+    <link rel="stylesheet" href="./assets/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="./assets/waterSupply.css">
+
+
+    <script src="./assets/bootstrap.min.js" type="text/javascript"></script>
+	<script src="./assets/jquery-websocket.js" type="text/javascript"></script>
+	<script src="./assets/highcharts.js" type="text/javascript"></script--!>
+
+    <!--link rel="stylesheet" href="main.css"-->
+
+</head>
+<body class="mdui-bottom-nav-fixed mdui-drawer-body-left mdui-appbar-with-toolbar mdui-theme-primary-indigo mdui-theme-accent-pink mdui-loaded">
+<header class="mdui-appbar mdui-appbar-fixed">
+	<div class="mdui-toolbar mdui-color-theme">
+		<span class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-drawer="{target: &#39;#main-drawer&#39;, swipe: true}"><i class="mdui-icon material-icons">menu</i></span>
+		<!--a href="https://www.mdui.org/docs/" class="mdui-typo-headline mdui-hidden-xs">MDUI</a-->
+		<a href="" class="mdui-typo-title">传感器设备</a>
+		<div class="mdui-toolbar-spacer"></div>
+		<!--span class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-dialog="{target: &#39;#dialog-docs-theme&#39;}" mdui-tooltip="{content: &#39;设置主题&#39;}"><i class="mdui-icon material-icons">color_lens</i></span>
+		<a href="https://github.com/zdhxiong/mdui" target="_blank" class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white" mdui-tooltip="{content: &#39;查看 Github&#39;}">
+			<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 36 36" enable-background="new 0 0 36 36" xml:space="preserve" class="mdui-icon" style="width: 24px;height:24px;">
+        <path fill-rule="evenodd" clip-rule="evenodd" fill="#ffffff" d="M18,1.4C9,1.4,1.7,8.7,1.7,17.7c0,7.2,4.7,13.3,11.1,15.5
+	c0.8,0.1,1.1-0.4,1.1-0.8c0-0.4,0-1.4,0-2.8c-4.5,1-5.5-2.2-5.5-2.2c-0.7-1.9-1.8-2.4-1.8-2.4c-1.5-1,0.1-1,0.1-1
+	c1.6,0.1,2.5,1.7,2.5,1.7c1.5,2.5,3.8,1.8,4.7,1.4c0.1-1.1,0.6-1.8,1-2.2c-3.6-0.4-7.4-1.8-7.4-8.1c0-1.8,0.6-3.2,1.7-4.4
+	c-0.2-0.4-0.7-2.1,0.2-4.3c0,0,1.4-0.4,4.5,1.7c1.3-0.4,2.7-0.5,4.1-0.5c1.4,0,2.8,0.2,4.1,0.5c3.1-2.1,4.5-1.7,4.5-1.7
+	c0.9,2.2,0.3,3.9,0.2,4.3c1,1.1,1.7,2.6,1.7,4.4c0,6.3-3.8,7.6-7.4,8c0.6,0.5,1.1,1.5,1.1,3c0,2.2,0,3.9,0,4.5
+	c0,0.4,0.3,0.9,1.1,0.8c6.5-2.2,11.1-8.3,11.1-15.5C34.3,8.7,27,1.4,18,1.4z"></path>
+      </svg>
+		</a-->
+	</div>
+</header>
+
+<script src="../assets/header.js" type="text/javascript"></script>
+<div id="loading" class="mdui-spinner" style="position: absolute;left: 50%;top: 50%;z-index: 100;"></div>
+<div class="mdui-container doc-container doc-no-cover">
+	<h1 class="doc-title mdui-text-color-theme">设备列表</h1>
+	<div>
+		<!--button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-600" onclick="addDevice()">新增</button-->
+		<!--button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent">删除</button-->
+	</div>
+	<div class="mdui-table-fluid">
+		<table id="devices" class="mdui-table mdui-table-hoverable mdui-table-selectable">
+			<thead>
+				<tr>
+					<th mdui-tooltip="{content: 'The total amount of food energy in the given serving size.'}">dev_id</th>
+					<th>dev_secret</th>
+					<th>状态</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody id="devices_list">
+			</tbody>
+		</table>
+	</div>
+</div>
+
+
+<script src="../assets/jquery.min.js" type="text/javascript"></script>
+<script src="../assets/mdui/js/mdui.min.js" type="text/javascript"></script>
+<script src="../assets/sensor_devices.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    var inst = new mdui.Drawer("#main-drawer");
+    inst.close();
+    $("#loading").hide();
+</script>
+
+<script type="text/javascript">
+    function updateTable(){
+        $("#loading").show();
+        $.ajax({
+            url: "../api/device/getDeviceList",
+            type : 'GET',
+            dataType:'json',
+            cache:false,
+            success:function(targetdata){
+                if (targetdata.status==0) {
+                    $("#devices_list").empty();
+                    var dataArray = targetdata.data;
+                    dataArray.forEach(function(val,index,arr) {
+                        var dev_id = val.dev_id;
+                        var dev_secret = val.dev_secret;
+                        var dev_status = val.dev_status;
+
+                        var tr =  $("<tr></tr>");
+                        $("<td></td>").text(dev_id).appendTo(tr);
+                        $("<td></td>").text(dev_secret).appendTo(tr);
+
+                        if (dev_status == 0) {
+                            $("<td></td>").text("已断开").appendTo(tr);
+                        } else if (dev_status == 1) {
+                            $("<td></td>").text("已连接").appendTo(tr);
+                        }
+                        var dev_operation = $('<td>\n' +
+                            '                   <button type="button" class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-600"  onclick="showDevice(this)">详情</button>\n' +
+                            '                 <!--button type="button" class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent"  onclick="delDevice(this)">删除</button-->\n' +
+                            '                 </td>');
+
+                        dev_operation.appendTo(tr);
+                        tr.appendTo($("#devices_list")[0]);
+                    });
+                    mdui.updateTables();
+                }else{
+                    alert("未知错误");
+                }
+                $("#loading").hide();
+            }
+        });
+
+    }
+    $(document).ready(function () {
+        $("#a_device").addClass("mdui-list-item-active");
+        updateTable();
+    });
+</script>
+</body>
+<script src="../assets/footer.js" type="text/javascript"></script>
+</html>

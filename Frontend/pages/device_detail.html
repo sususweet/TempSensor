@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>空气质量监测系统-设备实时信息</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+	<link rel="stylesheet" href="../../assets/mdui/css/mdui.min.css">
+	<link rel="stylesheet" href="../../assets/docs.css">
+	<!--link rel="stylesheet" href="./assets/bootstrap.min.css">
+    <link rel="stylesheet" href="./assets/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="./assets/waterSupply.css">
+
+
+    <script src="./assets/bootstrap.min.js" type="text/javascript"></script>
+    <script src="./assets/jquery-websocket.js" type="text/javascript"></script>
+    <script src="./assets/highcharts.js" type="text/javascript"></script--!>
+
+    <!--link rel="stylesheet" href="main.css"-->
+	<style type="text/css">
+		html,body{margin:0;padding:0;}
+		.iw_poi_title {color:#CC5522;font-size:14px;font-weight:bold;overflow:hidden;padding-right:13px;white-space:nowrap}
+		.iw_poi_content {font:12px arial,sans-serif;overflow:visible;padding-top:4px;white-space:-moz-pre-wrap;word-wrap:break-word}
+	</style>
+	<script type="text/javascript" src="http://api.map.baidu.com/getscript?v=2.0&ak=1f40225caf5c017c972a2bf2edc26f24&services=&t=20170823191629"></script>
+</head>
+<body class="mdui-bottom-nav-fixed mdui-appbar-with-toolbar mdui-theme-primary-indigo mdui-theme-accent-pink mdui-loaded">
+<header class="mdui-appbar mdui-appbar-fixed">
+	<div class="mdui-toolbar mdui-color-theme">
+		<span onclick="window.location.href='../device'" class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white">
+			<i class="mdui-icon material-icons">&#xe5c4;</i>
+        </span>
+		<a href="" class="mdui-typo-title">传感器设备</a>
+		<div class="mdui-toolbar-spacer"></div>
+	</div>
+</header>
+
+
+<div class="mdui-container doc-container doc-no-cover">
+	<h1 class="doc-title mdui-text-color-theme">实时监控信息</h1>
+	<p id="dev_id"></p>
+
+	<div class="mdui-card">
+		<div class="mdui-card-actions">
+			<div class="mdui-row">
+				<div class="mdui-col-sm-3 mdui-col-xs-6 mdui-text-center">
+					<p>温度 (℃)</p>
+					<h1 id="temperature" class="mdui-text-color-theme">*.*</h1>
+				</div>
+				<div class="mdui-col-sm-3 mdui-col-xs-6 mdui-text-center">
+					<p>湿度 (%)</p>
+					<h1 id="humidity" class="mdui-text-color-theme">*.*</h1>
+				</div>
+				<div class="mdui-col-sm-3 mdui-col-xs-6 mdui-text-center">
+					<p>PM2.5 浓度 (μg/m<sup>3</sup>)</p>
+					<h1 id="pm25" class="mdui-text-color-theme">*.*</h1>
+				</div>
+				<div class="mdui-col-sm-3 mdui-col-xs-6 mdui-text-center">
+					<p>设备状态</p>
+					<h1 id="status" class="mdui-text-color-theme">***</h1>
+				</div>
+			</div>
+		</div>
+	</div>
+    <br></br>
+    <h1 class="doc-title mdui-text-color-theme">地理位置信息</h1>
+	<div class="mdui-card">
+		<div class="mdui-card-actions">
+			<!--百度地图容器-->
+			<div style="width:100%;height:550px;border:#ccc solid 1px;" id="dituContent"></div>
+		</div>
+	</div>
+</div>
+
+<script src="../../assets/jquery.min.js" type="text/javascript"></script>
+<script src="../../assets/mdui/js/mdui.min.js" type="text/javascript"></script>
+<script src="../../assets/sensor_devices.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    var data = [
+        [110.32585778275,25.292645922592],
+        [111.32585778275,26.292645922592],
+        [110.32585778275,27.292645922592],
+        [111.32585778275,27.292645922592],
+    ];
+
+    // 根据轨迹点，两两连线，最终合成一条完整的轨迹
+    function showMap() {
+        var abc = $(data);
+        var chartData = [];
+        $.each(abc, function (item, value) {
+            chartData.push(new BMap.Point(value[0], value[1]));
+        })
+        for (var i = 0; i < chartData.length-1; i++) {
+            var startPoint = chartData[i];
+            var endPoint = chartData[i + 1];
+            showPath(startPoint, endPoint,i==0,i==chartData.length-2);
+        }
+    }
+
+    // 两个坐标点连线
+    function showPath(startPoint, EndPoint,displayStartIcon,displayEndIcon){
+
+        var walking = null;
+        if(displayStartIcon && !displayEndIcon){ // 第一个起点只展示起点图标
+            walking = new BMap.DrivingRoute(map, { renderOptions: { map: map, autoViewport: true },onMarkersSet:function(routes) {map.removeOverlay(routes[1].marker);}});
+        }else if(!displayStartIcon && !displayEndIcon){//中间的起点终点不展示起点、终点图标
+            walking = new BMap.DrivingRoute(map, { renderOptions: { map: map, autoViewport: true },onMarkersSet:function(routes) {map.removeOverlay(routes[0].marker);map.removeOverlay(routes[1].marker);}});
+        }else{// 最后一个终点只展示终点图标
+            walking = new BMap.DrivingRoute(map, { renderOptions: { map: map, autoViewport: true },onMarkersSet:function(routes) {map.removeOverlay(routes[0].marker);}});
+        }
+
+        walking.search(startPoint, EndPoint);
+    }
+	function getDeviceDetail(dev_id){
+		$.ajax({
+			url: "../../api/device/getDeviceDetail",
+			type : 'POST',
+			dataType:'json',
+			data:{
+				dev_id: dev_id
+			},
+			cache:false,
+			success:function(targetdata){
+				if (targetdata.status==0){
+					if(targetdata.data.status == 0){
+						$("#status").html("已断开");
+						$("#temperature").html("*.*");
+						$("#humidity").html("*.*");
+						$("#pm25").html("*.*");
+					}else if (targetdata.data.status == 1){
+						$("#status").html("已连接");
+						$("#temperature").html(targetdata.data.temperature);
+						$("#humidity").html(targetdata.data.humidity);
+						$("#pm25").html(targetdata.data.PM25);
+
+						if (targetdata.data.longitude != null && targetdata.data.latitude != null){
+                            //showMap();
+                            markerArr.splice(0,markerArr.length);//清空数组
+                            /*markerArr.push({
+                                title:"我标记",
+                                content:"我的备注",
+                                point: targetdata.data.longitude + "|" + targetdata.data.latitude,
+                                isOpen:0,
+                                icon:{w:23,h:25,l:23,t:21,x:9,lb:12}
+                            });
+                            */
+                            var point = new BMap.Point(targetdata.data.longitude, targetdata.data.latitude);//定义一个中心点坐标
+
+                            //坐标转换完之后的回调函数
+                            translateCallback = function (data){
+                                if(data.status === 0) {
+                                    window.map.centerAndZoom(data.points[0],18);//设定地图的中心点和坐标并将地图显示在地图容器中
+                                    markerArr.push({
+                                        title:"传感器位置",
+                                        content:"设备id："+dev_id,
+                                        point: data.points[0].lng + "|" + data.points[0].lat,
+                                        isOpen:0,
+                                        icon:{w:23,h:25,l:46,t:21,x:9,lb:12}
+                                    });
+                                    deleteAllMarker();
+                                    addMarker();	//向地图中添加marker
+                                }
+                            };
+
+                            setTimeout(function(){
+                                var convertor = new BMap.Convertor();
+                                var pointArr = [];
+                                pointArr.push(point);
+                                convertor.translate(pointArr, 1, 5, translateCallback);
+                            }, 1000);
+						}
+					}else{
+						$("#status").html("***");
+						$("#temperature").html("*.*");
+						$("#humidity").html("*.*");
+						$("#pm25").html("*.*");
+					}
+					//标注点数组
+					//window.location.reload();
+				}
+			}
+		});
+	}
+
+	$(document).ready(function () {
+		var dev_id = getQueryString("dev_id");
+		$("#dev_id").html("当前设备ID："+dev_id);
+		getDeviceDetail(dev_id);
+		var intervalID = setInterval(function () {
+			getDeviceDetail(dev_id);
+		}, 5000);
+	});
+</script>
+
+<script type="text/javascript">
+	var markerArr = [];
+	//创建和初始化地图函数：
+	function initMap(){
+		createMap();//创建地图
+		setMapEvent();//设置地图事件
+		addMapControl();//向地图添加控件
+	}
+
+	//创建地图函数：
+	function createMap(){
+		var map = new BMap.Map("dituContent");//在百度地图容器中创建一个地图
+		var point = new BMap.Point(106.755749,30.667824);//定义一个中心点坐标
+		map.centerAndZoom(point,5);//设定地图的中心点和坐标并将地图显示在地图容器中
+		window.map = map;//将map变量存储在全局
+	}
+
+	//地图事件设置函数：
+	function setMapEvent(){
+		map.enableDragging();//启用地图拖拽事件，默认启用(可不写)
+		//map.enableScrollWheelZoom();//启用地图滚轮放大缩小
+		map.enableDoubleClickZoom();//启用鼠标双击放大，默认启用(可不写)
+		map.enableKeyboard();//启用键盘上下左右键移动地图
+	}
+
+	//地图控件添加函数：
+	function addMapControl(){
+		//向地图中添加缩放控件
+		var ctrl_nav = new BMap.NavigationControl({anchor:BMAP_ANCHOR_TOP_LEFT,type:BMAP_NAVIGATION_CONTROL_LARGE});
+		map.addControl(ctrl_nav);
+		//向地图中添加缩略图控件
+		var ctrl_ove = new BMap.OverviewMapControl({anchor:BMAP_ANCHOR_BOTTOM_RIGHT,isOpen:1});
+		map.addControl(ctrl_ove);
+		//向地图中添加比例尺控件
+		var ctrl_sca = new BMap.ScaleControl({anchor:BMAP_ANCHOR_BOTTOM_LEFT});
+		map.addControl(ctrl_sca);
+	}
+
+
+	function deleteAllMarker(){
+		var allOverlay = map.getOverlays();
+		for(var i = 0;i<allOverlay.length;i++) {
+			//删除指定经度的点
+			//if (allOverlay[i].getPosition().lng == 104.044444) {
+			map.removeOverlay(allOverlay[i]);
+				//return false;
+			//}
+		}
+	}
+	//创建marker
+	function addMarker(){
+		for(var i=0;i<markerArr.length;i++){
+			var json = markerArr[i];
+			var p0 = json.point.split("|")[0];
+			var p1 = json.point.split("|")[1];
+			var point = new BMap.Point(p0,p1);
+			var iconImg = createIcon(json.icon);
+			var marker = new BMap.Marker(point,{icon:iconImg});
+			var iw = createInfoWindow(i);
+			var label = new BMap.Label(json.title,{"offset":new BMap.Size(json.icon.lb-json.icon.x+10,-20)});
+			marker.setLabel(label);
+			map.addOverlay(marker);
+			label.setStyle({
+				borderColor:"#808080",
+				color:"#333",
+				cursor:"pointer"
+			});
+
+			(function(){
+				var index = i;
+				var _iw = createInfoWindow(i);
+				var _marker = marker;
+				_marker.addEventListener("click",function(){
+					this.openInfoWindow(_iw);
+				});
+				_iw.addEventListener("open",function(){
+					_marker.getLabel().hide();
+				})
+				_iw.addEventListener("close",function(){
+					_marker.getLabel().show();
+				})
+				label.addEventListener("click",function(){
+					_marker.openInfoWindow(_iw);
+				})
+				if(!!json.isOpen){
+					label.hide();
+					_marker.openInfoWindow(_iw);
+				}
+			})()
+		}
+	}
+	//创建InfoWindow
+	function createInfoWindow(i){
+		var json = markerArr[i];
+		var iw = new BMap.InfoWindow("<b class='iw_poi_title' title='" + json.title + "'>" + json.title + "</b><div class='iw_poi_content'>"+json.content+"</div>");
+		return iw;
+	}
+	//创建一个Icon
+	function createIcon(json){
+		var icon = new BMap.Icon("http://api.map.baidu.com/lbsapi/creatmap/images/us_mk_icon.png", new BMap.Size(json.w,json.h),{imageOffset: new BMap.Size(-json.l,-json.t),infoWindowOffset:new BMap.Size(json.lb+5,1),offset:new BMap.Size(json.x,json.h)})
+		return icon;
+	}
+
+	initMap();//创建和初始化地图
+</script>
+
+</body>
+<script src="../../assets/footer.js" type="text/javascript"></script>
+</html>

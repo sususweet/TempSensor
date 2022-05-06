@@ -1,0 +1,18 @@
+document.writeln("<div class=\'mdui-drawer\' id=\'main-drawer\'>");
+document.writeln("	<div class=\'mdui-list\' mdui-collapse=\'{accordion: true}\' style=\'margin-bottom: 76px;\'>");
+document.writeln("		<div class=\'mdui-collapse-item mdui-collapse-item-open\'>");
+document.writeln("			<div class=\'mdui-collapse-item-header mdui-list-item mdui-ripple\'>");
+document.writeln("				<i class=\'mdui-list-item-icon mdui-icon material-icons mdui-text-color-blue\'>near_me</i>");
+document.writeln("				<div class=\'mdui-list-item-content\'>传感器设备</div>");
+document.writeln("				<i class=\'mdui-collapse-item-arrow mdui-icon material-icons\'>keyboard_arrow_down</i>");
+document.writeln("			</div>");
+document.writeln("			<div class=\'mdui-collapse-item-body mdui-list\'>");
+document.writeln("				<a id=\'a_device\' href=\'/Sensor/admin/device\' class=\'mdui-list-item mdui-ripple\'>设备列表</a>");
+document.writeln("				<a id=\'a_chart\' href=\'/Sensor/admin/chart\' class=\'mdui-list-item mdui-ripple \'>统计图表</a>");
+document.writeln("			</div>");
+document.writeln("		</div>");
+document.writeln("	</div>");
+document.writeln("</div>");
+document.writeln("");
+document.writeln("<a id=\'anchor-top\'></a>");
+document.writeln("");
